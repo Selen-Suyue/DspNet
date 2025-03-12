@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="An autoregressive policy for bidirectional learning of actions">
+  <meta name="keywords" content="Robot manipulation, Imitation learning">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> DSP | Dense Policy </title>
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="icon" type="image/png" href="img/icon.jpg">
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+
+<body>
+
+
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <span style="font-size: 1.7em;">
+              &#x1F339; <span style="color: #CA6F6F;">&#8594;</span> &#x1F339; &#x1F339; <span
+                style="color: #CA6F6F;">&#8594;</span>
+              &#x1F339; &#x1F339; &#x1F339; &#x1F339;
+              <span style="color: #CA6F6F;">&#8594;</span> &#x1F339; &#x1F339; &#x1F339; &#x1F339; &#x1F339; &#x1F339;
+              &#x1F339;
+            </span>
+            <br />
+            <h1 class="title is-1 publication-title">
+              <span style="color: #F8CDAC;">D</span>en<span style="color: #F8CDAC;">S</span>e
+              <span style="color: #F8CDAC;">P</span>olicy: Bidirectional Autoregressive Learning of Actions
+            </h1>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a href="https://selen-suyue.github.io">Yue Su</a><sup>1,2*</sup>,</span>
+              <span class="author-block">
+                <a href="https://scholar.google.com/citations?user=WurpqEMAAAAJ&hl=en">Xinyu
+                  Zhan</a><sup>1*</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://tonyfang.net/">Hongjie Fang</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://hanxue.me/">Han Xue</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://fang-haoshu.github.io/">Haoshu Fang</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://dirtyharrylyl.github.io/">Yong-Lu Li</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a href="http://mvig.org">Cewu Lu</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://lixiny.github.io">Lixin Yang</a><sup>1&dagger;</sup>
+              </span>
+            </div>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><sup>1</sup>Shanghai Jiao Tong University,</span>
+              <span class="author-block"><sup>2</sup>Xidian University</span>
+            </div>
+
+            * Equal contribution &nbsp;&nbsp; &dagger; Corresponding author
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <span class="link-block">
+                  <a href="" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                    </span>
+                    <span>arXiv</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <a href="https://github.com/Selen-Suyue/DensePolicy"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>code</span>
+                  </a>
+                </span>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <h3 class="title is-3"
+        style="font-family: 'Roboto', sans-serif; font-weight: 700; color: #333; text-align: center;">Bidirectional
+        Learning,
+        Coarse-to-fine Inference</h3>
+      <div class="image-section" style="text-align: center; margin: 20px 0;">
+        <img src="img/teaser.png" alt="MBA Diagram" style="max-width: 100%; height: auto;">
+      </div>
+
+      <div class="content has-text-justified"
+        style="font-family: 'Arial', sans-serif; font-size: 20px; line-height: 1.6; color: #444;">
+        <p><strong>Dense Policy</strong> provides new insights into policy learning.
+          From a sequence learning perspective, we posit a novel paradigm: bidirectional prediction offers advantages over 
+          unidirectional prediction for sequence modeling. Regarding action generation, we explore a novel approach, 
+          demonstrating that expanding actions from sparse keyframes to complete, dense frames via inference is more 
+          effective than modeling the joint distribution directly.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <script>
+    $(document).ready(function () {
+      $(document).foundation();
+    })
+  </script>
+  </div>
+  </div>
+  </section>
+  <section class="section">
+    <div class="container is-max-desktop">
+      <h3 class="title is-3"
+        style="font-family: 'Roboto', sans-serif; font-weight: 700; color: #333;text-align: center;">Abstract</h3>
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <br>
+          <!-- <div class="publication-video">
+            <iframe width="560" height="315"
+              src="https://www.youtube.com/embed/nPqLqk2naNc?si=PkTCflv9Suf3cDrH&hd=1&vq=hd1080"
+              title="YouTube video player" frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          </div> -->
+        </div>
+      </div>
+      <div class="content has-text-justified"
+        style="font-family: 'Arial', sans-serif; font-size: 20px; line-height: 1.6; color: #444;">
+        Mainstream visuomotor policies predominantly rely on generative models for holistic action prediction, 
+        while current autoregressive policies, predicting the next token or chunk, have shown suboptimal results. 
+        This motivates a search for more effective learning methods to unleash the potential of autoregressive policies 
+        for robotic manipulation. This paper introduces a bidirectionally expanded learning approach, termed Dense Policy, 
+        to establish a new paradigm for autoregressive policies in action prediction. It employs a lightweight encoder-only 
+        architecture to iteratively unfold the action sequence from an initial single frame into the target sequence in a 
+        coarse-to-fine manner with logarithmic-time inference. Extensive experiments validate that our dense policy has 
+        superior autoregressive learning capabilities and can surpass existing holistic generative policies. Our policy, 
+        example data, and training code will be publicly available upon publication.
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <h3 class="title is-3"
+        style="font-family: 'Roboto', sans-serif; font-weight: 700; color: #333; text-align: center;">  Dense Policy Overview</h3>
+      <div class="image-section" style="text-align: center; margin: 20px 0;">
+        <img src="img/pipeline.png" alt="MBA Diagram" style="max-width: 100%; height: auto;">
+      </div>
+
+      <div class="content has-text-justified"
+        style="font-family: 'Arial', sans-serif; font-size: 20px; line-height: 1.6; color: #444;">
+        <p><strong> Dense Policy</strong>
+accepts visual inputs in different modalities and optional robot proprioception. It
+employs a unified encoder to perform cross-attention between hierarchical action representations and observation features. This facilitates
+a bidirectionally expanding dense process. During each dense process level, the actions, initially represented as sparse keyframes, are
+progressively infilled and refined into a complete predicted sequence, leading to a coarse-to-fine generation procedure.</p>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div>
+          <h3 class="title is-3"
+            style="font-family: 'Roboto', sans-serif; font-weight: 700; color: #333; text-align: center;">Presentation
+          </h3>
+          <div class="image-section" style="display: flex; justify-content: center; gap: 20px; margin: 20px 0;">
+            <img src="img/parameter.png" alt="DSP Diagram" style="max-width: 50%; height: auto;">
+            <img src="img/Efficiency.png" alt="Another Diagram" style="max-width: 48%; height: auto;">
+        </div>        
+          <div class="content has-text-justified"
+            style="font-family: 'Arial', sans-serif; font-size: 20px; line-height: 1.6; color: #444;">
+            <p>
+              Compared to other downstream policies, the Dense Policy achieves a superior balance between a lightweight 
+              parameters and efficient inference speed. Furthermore, it exhibits enhanced learning efficiency, 
+              achieving superior performance within the same number of training iterations. We demonstrate its 
+              efficacy across four distinct manipulation tasks.
+            </p>
+          </div>
+
+              <div class="content has-text-justified">
+                <h4 class="has-text-centered">Open Drawer at 4x Speed</h4>
+                <div id="wrapper">
+                  <video id="home1" autoplay muted loop playsinline width=49.7%>
+                    <source type="video/mp4" src="video\drawer_dsp.mp4" />
+                  </video>
+                  <video id="home2" autoplay muted loop playsinline width=49.7%>
+                    <source type="video/mp4" src="video\drawer_baseline.mp4" />
+                  </video>
+                  <div class="clear"></div>
+                  <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                    <p
+                      style="font-family: 'Ubuntu Mono','Fira Code'; font-weight: 700;text-align: center; color: #333;font-size:18px">
+                      <span>
+                        &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp; &nbsp;
+                        Dense Policy</span>
+                    </p>
+                    <p
+                      style="font-family: 'Ubuntu Mono','Fira Code'; font-weight: 700;text-align: center; color: #333;font-size:18px">
+                      <span>Baseline
+                        &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp; &nbsp;
+                      </span>
+                    </p>
+                  </div>
+                  <div class="clear"></div>
+
+
+                  <div class="content has-text-justified">
+                    <h4 class="has-text-centered">Put Bread into Pot at 4x Speed</h4>
+                    <div id="wrapper">
+                      <video id="home1" autoplay muted loop playsinline width=49.7%>
+                        <source type="video/mp4" src="video\bread_dsp.mp4" />
+                      </video>
+                      <video id="home2" autoplay muted loop playsinline width=49.7%>
+                        <source type="video/mp4" src="video\bread_baseline.mp4" />
+                      </video>
+                      <div class="clear"></div>
+                      <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                        <p
+                          style="font-family: 'Ubuntu Mono','Fira Code'; font-weight: 700;text-align: center; color: #333;font-size:18px">
+                          <span>
+                            &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp; &nbsp; 
+                            Dense Policy</span>
+                        </p>
+                        <p
+                          style="font-family: 'Ubuntu Mono','Fira Code'; font-weight: 700;text-align: center; color: #333;font-size:18px">
+                          <span>Baseline
+                            &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp; &nbsp;
+                          </span>
+                        </p>
+                      </div>
+                      <div class="clear"></div>
+
+
+
+                      <div class="content has-text-justified">
+                        <h4 class="has-text-centered">Pour Balls at 4x Speed</h4>
+                        <div id="wrapper">
+                          <video id="home1" autoplay muted loop playsinline width=49.7%>
+                            <source type="video/mp4" src="video\pour_dsp.mp4" />
+                          </video>
+                          <video id="home2" autoplay muted loop playsinline width=49.7%>
+                            <source type="video/mp4" src="video\pour_baseline.mp4" />
+                          </video>
+                          <div class="clear"></div>
+                          <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                            <p
+                              style="font-family: 'Ubuntu Mono','Fira Code'; font-weight: 700;text-align: center; color: #333;font-size:18px">
+                              <span>
+                                &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp; &nbsp;
+                                Dense Policy</span>
+                            </p>
+                            <p
+                              style="font-family: 'Ubuntu Mono','Fira Code'; font-weight: 700;text-align: center; color: #333;font-size:18px">
+                              <span>Baseline
+                                &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                &nbsp; &nbsp;
+                              </span>
+                            </p>
+                          </div>
+                          <div class="clear"></div>
+                          <div class="content has-text-justified">
+                            <h4 class="has-text-centered">Flower Arrangement at 4x Speed</h4>
+                            <div id="wrapper">
+                              <video id="home1" autoplay muted loop playsinline width=49.7%>
+                                <source type="video/mp4" src="video\flower_dsp.mp4" />
+                              </video>
+                              <video id="home2" autoplay muted loop playsinline width=49.7%>
+                                <source type="video/mp4" src="video\flower_baseline.mp4" />
+                              </video>
+                              <div class="clear"></div>
+                              <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                                <p
+                                  style="font-family: 'Ubuntu Mono','Fira Code'; font-weight: 700;text-align: center; color: #333;font-size:18px">
+                                  <span>
+                                    &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp; &nbsp; 
+                                    Dense Policy</span>
+                                </p>
+                                <p
+                                  style="font-family: 'Ubuntu Mono','Fira Code'; font-weight: 700;text-align: center; color: #333;font-size:18px">
+                                  <span>Baseline
+                                    &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp; &nbsp;
+                                  </span>
+                                </p>
+                              </div>
+                              <div class="clear"></div>
+                          <h4 class="has-text-centered" style="margin-top: 20px;">Deal with different kinds of objects
+                            and complete different kinds of tasks</h4>
+
+                          <div class="content has-text-justified"
+                            style="font-family: 'Arial', sans-serif; font-size: 20px; line-height: 1.6; color: #444;">
+                            <p>
+                              Dense Policy exhibits superior performance across a diverse range of manipulation tragets, 
+                              including rigid bodies, deformable objects, and articulated structures, as well 
+                              as tasks characterized by high degrees of freedom, long horizons, and multi-object 
+                              interactions. This is primarily attributed to its bidirectional sequence modeling, 
+                              which produces smoother, more adaptive action trajectories, and its coarse-to-fine 
+                              hierarchical inference, enabling high-precision actions suitable for manipulation tasks 
+                              with low error tolerance.
+                              
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+  </section>
+
+  <!-- <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div>
+          <h3 class="title is-3"
+            style="font-family: 'Roboto', sans-serif; font-weight: 700; color: #333; text-align: center;">Failure Cases
+          </h3>
+          <div class="content has-text-justified"
+            style="font-family: 'Arial', sans-serif; font-size: 20px; line-height: 1.6; color: #444;">
+            <p>
+              Due to the insufficient number of 50 expert demonstrations, MBA's ability to accurately estimate
+              object pose sequences lacks robustness, which can lead to task execution failures. For example,
+              in the Open Drawer task shown below, when the target is positioned at the image edge, resulting
+              in point cloud occlusions, MBA fails to grasp the drawer handle. Similarly, in the Put Bread task,
+              the presence of numerous clutter items in the scene negatively impacts the policy's execution.
+            </p>
+          </div>
+
+          <div class="content has-text-justified">
+            <h4 class="has-text-centered">Failure Cases at 4x Speed</h4>
+            <div id="wrapper">
+              <video id="home1" autoplay muted loop playsinline width=49.7%>
+                <source type="video/mp4" src="video\drawerfail.mp4" />
+              </video>
+              <video id="home2" autoplay muted loop playsinline width=49.7%>
+                <source type="video/mp4" src="video\breadfail.mp4" />
+              </video>
+              <div class="clear"></div>
+              <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                <p
+                  style="font-family: 'Ubuntu Mono','Fira Code'; font-weight: 700;text-align: center; color: #333;font-size:18px">
+                  <span>
+                    &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;
+                    Open Drawer</span>
+                </p>
+                <p
+                  style="font-family: 'Ubuntu Mono','Fira Code'; font-weight: 700;text-align: center; color: #333;font-size:18px">
+                  <span>Put Bread into Pot
+                    &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;
+                    &nbsp; &nbsp;
+                  </span>
+                </p>
+              </div>
+              <div class="clear"></div>
+
+            </div>
+          </div>
+  </section> -->
+
+  <!-- <section class="section">
+    <div class="container is-max-desktop">
+      <h3 class="title is-3"
+        style="font-family: 'Roboto', sans-serif; font-weight: 700; color: #333;text-align: center;">Test Recording</h3>
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <br>
+          <div class="publication-video">
+            <iframe width="560" height="315"
+              src="https://www.youtube.com/embed/BZEmq_lnl3w?si=C4xg-C2kQq347tCg&hd=1&vq=hd1080"
+              title="YouTube video player" frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section> -->
+
+
+  <!-- <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h3 class="title is-3"
+        style="font-family: 'Ubuntu Mono','Fira Code'; font-weight: 700;text-align: center; color: #333;">Citation</h3>
+      <pre style="font-family: 'Roboto Mono', monospace; font-size: 17px;"><code>@misc{su2024motionactiondiffusingobject,
+        title={Motion Before Action: Diffusing Object Motion as Manipulation Condition}, 
+        author={Yue Su and Xinyu Zhan and Hongjie Fang and Yong-Lu Li and Cewu Lu and Lixin Yang},
+        year={2024},
+        archivePrefix={arXiv} 
+  }
+</code></pre>
+    </div>
+  </section> -->
+
+  <footer class="footer">
+    <div class="container">
+      <div class="content has-text-centered">
+        <a class="icon-link" href="">
+          <i class="fas fa-file-pdf"></i>
+        </a>
+        <a class="icon-link" href="https://github.com/Selen-Suyue/DensePolicy" class="external-link" disabled>
+          <i class="fab fa-github"></i>
+        </a>
+        <br>
+        website template from <a href="https://github.com/nerfies/nerfies.github.io">nerfies</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+
+</html>
