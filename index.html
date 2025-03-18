@@ -94,7 +94,7 @@
             <div class="column has-text-centered">
               <div class="publication-links">
                 <span class="link-block">
-                  <a href="" class="external-link button is-normal is-rounded is-dark">
+                  <a href="https://arxiv.org/abs/2503.13217" class="external-link button is-normal is-rounded is-dark">
                     <span class="icon">
                       <i class="ai ai-arxiv"></i>
                     </span>
@@ -126,7 +126,7 @@
         Learning,
         Coarse-to-fine Inference</h3>
       <div class="image-section" style="text-align: center; margin: 20px 0;">
-        <img src="img/teaser.png" alt="MBA Diagram" style="max-width: 100%; height: auto;">
+        <img src="img/teaser.png" alt="DSP Diagram" style="max-width: 100%; height: auto;">
       </div>
 
       <div class="content has-text-justified"
@@ -153,17 +153,20 @@
     <div class="container is-max-desktop">
       <h3 class="title is-3"
         style="font-family: 'Roboto', sans-serif; font-weight: 700; color: #333;text-align: center;">Abstract</h3>
-      <div class="columns is-centered has-text-centered">
+      <!-- <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
           <br>
-          <!-- <div class="publication-video">
+          <div class="publication-video">
             <iframe width="560" height="315"
               src="https://www.youtube.com/embed/nPqLqk2naNc?si=PkTCflv9Suf3cDrH&hd=1&vq=hd1080"
               title="YouTube video player" frameborder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-          </div> -->
+          </div>
         </div>
+      </div> -->
+      <div class="image-section" style="text-align: center; margin: 20px 0;">
+        <img src="img/relat.png" alt="DSP Diagram" style="max-width: 100%; height: auto;">
       </div>
       <div class="content has-text-justified"
         style="font-family: 'Arial', sans-serif; font-size: 20px; line-height: 1.6; color: #444;">
@@ -185,7 +188,7 @@
       <h3 class="title is-3"
         style="font-family: 'Roboto', sans-serif; font-weight: 700; color: #333; text-align: center;">  Dense Policy Overview</h3>
       <div class="image-section" style="text-align: center; margin: 20px 0;">
-        <img src="img/pipeline.png" alt="MBA Diagram" style="max-width: 100%; height: auto;">
+        <img src="img/pipeline.png" alt="DSP Diagram" style="max-width: 100%; height: auto;">
       </div>
 
       <div class="content has-text-justified"
@@ -342,7 +345,12 @@ progressively infilled and refined into a complete predicted sequence, leading t
                               <div class="clear"></div>
                           <h4 class="has-text-centered" style="margin-top: 20px;">Deal with different kinds of objects
                             and complete different kinds of tasks</h4>
-
+                            <div class="image-section" style="text-align: center; margin: 20px 0;">
+                              <img src="img/sim.png" alt="DSP sim" style="max-width: 100%; height: auto;">
+                            </div>
+                            <div class="image-section" style="text-align: center; margin: 20px 0;">
+                              <img src="img/real.png" alt="DSP real" style="max-width: 100%; height: 200px;">
+                            </div>
                           <div class="content has-text-justified"
                             style="font-family: 'Arial', sans-serif; font-size: 20px; line-height: 1.6; color: #444;">
                             <p>
@@ -353,39 +361,42 @@ progressively infilled and refined into a complete predicted sequence, leading t
                               which produces smoother, more adaptive action trajectories, and its coarse-to-fine 
                               hierarchical inference, enabling high-precision actions suitable for manipulation tasks 
                               with low error tolerance.
-                              
                             </p>
                           </div>
                         </div>
                       </div>
   </section>
 
-  <!-- <section class="section">
+  <section class="section">
     <div class="container is-max-desktop">
       <div class="columns is-centered has-text-centered">
         <div>
           <h3 class="title is-3"
-            style="font-family: 'Roboto', sans-serif; font-weight: 700; color: #333; text-align: center;">Failure Cases
+            style="font-family: 'Roboto', sans-serif; font-weight: 700; color: #333; text-align: center;">Limitations
           </h3>
           <div class="content has-text-justified"
             style="font-family: 'Arial', sans-serif; font-size: 20px; line-height: 1.6; color: #444;">
             <p>
-              Due to the insufficient number of 50 expert demonstrations, MBA's ability to accurately estimate
-              object pose sequences lacks robustness, which can lead to task execution failures. For example,
-              in the Open Drawer task shown below, when the target is positioned at the image edge, resulting
-              in point cloud occlusions, MBA fails to grasp the drawer handle. Similarly, in the Put Bread task,
-              the presence of numerous clutter items in the scene negatively impacts the policy's execution.
+              We evaluate the zero-shot generalization capability of the dense policy by attempting to elevate both the cup and 
+              the bowl. This scenario, absent from the expert training demonstrations, presents an out-of-distribution challenge, 
+              implying the policy has likely not encountered grasping and pouring actions from such elevated heights during training. 
+              Our findings reveal that the policy achieves complete ball transfer when only the cup is elevated. However, 
+              performance degrades significantly when both the cup and the bowl are raised simultaneously. 
+              This observation indicates that while the policy exhibits a certain degree of generalization ability, 
+              it is not yet sufficiently robust to handle such combined perturbations.
             </p>
           </div>
-
           <div class="content has-text-justified">
-            <h4 class="has-text-centered">Failure Cases at 4x Speed</h4>
+            <h4 class="has-text-centered">All Cases at 4x Speed</h4>
             <div id="wrapper">
-              <video id="home1" autoplay muted loop playsinline width=49.7%>
-                <source type="video/mp4" src="video\drawerfail.mp4" />
+              <video id="home1" autoplay muted loop playsinline width=33%>
+                <source type="video/mp4" src="video\pour_h1.mp4" />
               </video>
-              <video id="home2" autoplay muted loop playsinline width=49.7%>
-                <source type="video/mp4" src="video\breadfail.mp4" />
+              <video id="home2" autoplay muted loop playsinline width=33%>
+                <source type="video/mp4" src="video\pour_h2.mp4" />
+              </video>
+              <video id="home2" autoplay muted loop playsinline width=33%>
+                <source type="video/mp4" src="video\flower_fail.mp4" />
               </video>
               <div class="clear"></div>
               <div style="display: flex; justify-content: space-between; margin-top: 5px;">
@@ -393,24 +404,41 @@ progressively infilled and refined into a complete predicted sequence, leading t
                   style="font-family: 'Ubuntu Mono','Fira Code'; font-weight: 700;text-align: center; color: #333;font-size:18px">
                   <span>
                     &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;
-                    Open Drawer</span>
+                    (a) Elevate cup </span>
                 </p>
                 <p
                   style="font-family: 'Ubuntu Mono','Fira Code'; font-weight: 700;text-align: center; color: #333;font-size:18px">
-                  <span>Put Bread into Pot
-                    &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;
-                    &nbsp; &nbsp;
-                  </span>
+                  <span>
+                    &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    (b) Elevate cup and bowl </span>
+                </p>
+                <p
+                  style="font-family: 'Ubuntu Mono','Fira Code'; font-weight: 700;text-align: center; color: #333;font-size:18px">
+                  <span>
+                    &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    (c) The Flower Dilemma </span> &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;
                 </p>
               </div>
               <div class="clear"></div>
-
+              <div class="content has-text-justified"
+            style="font-family: 'Arial', sans-serif; font-size: 20px; line-height: 1.6; color: #444;">
+            <p>
+            We also conducted an intriguing experiment focusing on the task of flower arrangement, a task that stringently tests 
+            a model's spatial reasoning capabilities, as mentioned in our paper. While the order of picking flowers is 
+            often inconsequential to task success, certain extreme cases necessitate a specific sequence. For instance, 
+            in the case presented, only by first inserting the flower with the blue base into the cup can all three flowers 
+            be successfully arranged. Otherwise, inserting other flowers initially makes grasping the blue-base flower 
+            significantly more challenging due to spatial constraints and the risk of collision with already-inserted 
+            flowers, potentially leading to failure. Furthermore, the dense point cloud in this crowded scene constricts 
+            the action space, inherently increasing the task difficulty. The dense policy, after successfully inserting the 
+            red-base flower, encountered the difficulty in picking the blue-base flower and subsequently stalled, highlighting 
+            a limitation in handling such constrained scenarios.
+            </p>
+          </div>
             </div>
           </div>
-  </section> -->
+  </section>
 
   <!-- <section class="section">
     <div class="container is-max-desktop">
@@ -432,24 +460,23 @@ progressively infilled and refined into a complete predicted sequence, leading t
   </section> -->
 
 
-  <!-- <section class="section" id="BibTeX">
+  <section class="section" id="BibTeX">
     <div class="container is-max-desktop content">
       <h3 class="title is-3"
         style="font-family: 'Ubuntu Mono','Fira Code'; font-weight: 700;text-align: center; color: #333;">Citation</h3>
-      <pre style="font-family: 'Roboto Mono', monospace; font-size: 17px;"><code>@misc{su2024motionactiondiffusingobject,
-        title={Motion Before Action: Diffusing Object Motion as Manipulation Condition}, 
-        author={Yue Su and Xinyu Zhan and Hongjie Fang and Yong-Lu Li and Cewu Lu and Lixin Yang},
-        year={2024},
-        archivePrefix={arXiv} 
-  }
-</code></pre>
+      <pre style="font-family: 'Roboto Mono', monospace; font-size: 17px;"><code>@misc{DensePolicy,
+          title={Dense Policy: Bidirectional Autoregressive Learning of Actions}, 
+          author={Yue Su and Xinyu Zhan and Hongjie Fang and Han Xue and Hao-Shu Fang and Yong-Lu Li and Cewu Lu and Lixin Yang},
+          year={2025},
+          archivePrefix={arXiv}
+    }</code></pre>
     </div>
-  </section> -->
+  </section>
 
   <footer class="footer">
     <div class="container">
       <div class="content has-text-centered">
-        <a class="icon-link" href="">
+        <a class="icon-link" href="https://arxiv.org/abs/2503.13217">
           <i class="fas fa-file-pdf"></i>
         </a>
         <a class="icon-link" href="https://github.com/Selen-Suyue/DensePolicy" class="external-link" disabled>
